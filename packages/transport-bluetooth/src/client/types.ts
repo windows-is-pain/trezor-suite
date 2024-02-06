@@ -1,5 +1,26 @@
 import type { TypedEmitter } from '@trezor/utils';
 
+export interface Logger {
+    debug(...args: any): void;
+    log(...args: any): void;
+    warn(...args: any): void;
+    error(...args: any): void;
+}
+
+export interface TrezorBluetoothSettings {
+    url: string;
+    logger?: Logger;
+    timeout?: number;
+}
+
+export type BluetoothInfo = {
+    powered: boolean;
+    api_version: string;
+    adapter_info: string;
+    adapter_version: number;
+};
+
+// see: ./src/server/device.rs
 export interface BluetoothDevice {
     id: string;
     name: string;
@@ -12,7 +33,22 @@ export interface BluetoothDevice {
     rssi?: number; // signal strength
 }
 
+export type BluetoothAdapterState = 'enabled' | 'disabled' | 'permission-denied';
+
+export interface NotificationEvent {
+    adapter_state_changed: { state: BluetoothAdapterState };
+    device_discovered: { id: string; devices: BluetoothDevice[] };
+    device_updated: { id: string; devices: BluetoothDevice[] };
+    device_connected: { id: string; devices: BluetoothDevice[] };
+    device_connection_status: BluetoothDevice;
+    device_disconnected: { id: string; devices: BluetoothDevice[] };
+    device_read: { id: string; data: number[] };
+    device_settings_ui: void;
+    device_removed: { id: string };
+}
+
 // IpcApi related types
+// see: .src/server/device.rs
 export type DeviceConnectionStatus =
     | { type: 'disconnected' }
     | { type: 'pairing'; pin?: string }
@@ -33,7 +69,7 @@ type Failure = { success: false; error: string };
 type IpcResponse<P = unknown> = Success<P> | Failure;
 
 export interface BluetoothIpcEvents {
-    'adapter-event': boolean;
+    'adapter-event': BluetoothAdapterState;
     'device-list-update': BluetoothDevice[];
     'device-update': BluetoothDevice;
 }
