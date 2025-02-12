@@ -17,6 +17,7 @@ import type {
     WalletSettings,
 } from '@suite-common/wallet-types';
 import type { StorageUpdateMessage } from '@trezor/suite-storage';
+import type { BluetoothDevice } from '@trezor/transport-bluetooth';
 
 import type { SuiteState } from 'src/reducers/suite/suiteReducer';
 import type { MetadataState } from 'src/types/suite/metadata';
@@ -69,6 +70,12 @@ export interface SuiteDBSchema extends DBSchema {
     devices: {
         key: string;
         value: DeviceWithEmptyPath;
+    };
+    knownDevices: {
+        key: string;
+        value: {
+            bluetooth: BluetoothDevice[];
+        };
     };
     accounts: {
         key: string[];

@@ -1267,6 +1267,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
             return walletSettings;
         });
+        db.createObjectStore('knownDevices');
     }
 
     await migrationCoinmarketToTrading(db, oldVersion, newVersion, transaction);
