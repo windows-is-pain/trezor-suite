@@ -85,6 +85,7 @@ export interface Flags {
     showCopyAddressModal: boolean;
     enableAutoupdateOnNextRun: boolean;
     isBluetoothEnabled: boolean;
+    showBluetoothDebugInfo: boolean;
 }
 
 export interface EvmSettings {
@@ -166,6 +167,7 @@ const initialState: SuiteState = {
         showUnhideTokenModal: true,
         enableAutoupdateOnNextRun: false,
         isBluetoothEnabled: false,
+        showBluetoothDebugInfo: false,
     },
     evmSettings: {
         confirmExplanationModalClosed: {},
