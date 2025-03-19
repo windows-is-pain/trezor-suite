@@ -45,10 +45,23 @@ const openBluetoothSettings = () => {
     return { success: false, error: 'Unsupported os' };
 };
 
+const openBluetoothSecurity = () => {
+    if (isMacOs()) {
+        return openSettings(
+            'open "x-apple.systempreferences:com.apple.preference.security?Privacy_Bluetooth"',
+        );
+    }
+
+    return { success: false, error: 'Unsupported os' };
+};
+
 export const init: ModuleInit = () => {
     ipcMain.handle('system/open-settings', (_, settings) => {
         if (settings === 'bluetooth') {
             return openBluetoothSettings();
+        }
+        if (settings === 'bluetooth-security') {
+            return openBluetoothSecurity();
         }
 
         return { success: false, error: `Unknown settings: ${settings}` };
