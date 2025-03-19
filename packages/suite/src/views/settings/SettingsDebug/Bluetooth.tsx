@@ -5,6 +5,7 @@ import { Checkbox } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
+import { bluetoothDisposeThunk } from '../../../actions/bluetooth/bluetoothDisposeThunk';
 import { initBluetoothThunk } from '../../../actions/bluetooth/initBluetoothThunk';
 import { setFlag } from '../../../actions/suite/suiteActions';
 import { selectSuiteFlags } from '../../../reducers/suite/suiteReducer';
@@ -16,8 +17,15 @@ export const Bluetooth = () => {
 
     const handleOnClick = async () => {
         setIsLoading(true);
+
+        if (isBluetoothEnabled) {
+            await dispatch(bluetoothDisposeThunk());
+        } else {
+            await dispatch(initBluetoothThunk());
+        }
+
         dispatch(setFlag('isBluetoothEnabled', !isBluetoothEnabled));
-        await dispatch(initBluetoothThunk());
+
         setIsLoading(false);
     };
 
