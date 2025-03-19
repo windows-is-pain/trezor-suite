@@ -34,8 +34,15 @@ export type BluetoothDeviceCommon = {
 
 export type DeviceBluetoothConnectionStatusType = DeviceBluetoothConnectionStatus['type'];
 
+export type BluetoothAdapterStatus =
+    | 'unknown'
+    | 'enabled'
+    | 'disabled'
+    | 'permission-denied'
+    | 'not-compatible';
+
 export type BluetoothState<T extends BluetoothDeviceCommon> = {
-    adapterStatus: 'unknown' | 'enabled' | 'disabled';
+    adapterStatus: BluetoothAdapterStatus;
     scanStatus: BluetoothScanStatus;
     nearbyDevices: T[]; // Must be sorted, newest last
 
@@ -54,9 +61,9 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
 
     return createReducerWithExtraDeps<BluetoothState<T>>(initialState, (builder, extra) =>
         builder
-            .addCase(bluetoothActions.adapterEventAction, (state, { payload: { isPowered } }) => {
-                state.adapterStatus = isPowered ? 'enabled' : 'disabled';
-                if (!isPowered) {
+            .addCase(bluetoothActions.adapterEventAction, (state, { payload: { status } }) => {
+                state.adapterStatus = status;
+                if (status !== 'enabled') {
                     state.nearbyDevices = [];
                     state.scanStatus = 'idle';
                 }
