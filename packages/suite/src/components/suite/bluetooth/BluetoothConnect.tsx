@@ -18,6 +18,7 @@ import { BluetoothScanFooter } from './BluetoothScanFooter';
 import { BluetoothScanHeader } from './BluetoothScanHeader';
 import { BluetoothSelectedDevice } from './BluetoothSelectedDevice';
 import { BluetoothTips } from './BluetoothTips';
+import { BluetoothDeniedForSuite } from './errors/BluetoothDeniedForSuite';
 import { BluetoothNotEnabled } from './errors/BluetoothNotEnabled';
 import { BluetoothVersionNotCompatible } from './errors/BluetoothVersionNotCompatible';
 import { bluetoothConnectDeviceThunk } from '../../../actions/bluetooth/bluetoothConnectDeviceThunk';
@@ -133,9 +134,29 @@ export const BluetoothConnect = ({ onClose, uiMode }: BluetoothConnectProps) => 
         // return <BluetoothNotEnabled onCancel={onClose} />;
     }
 
+    if (bluetoothAdapterStatus === 'permission-denied') {
+        return (
+            <Column gap={spacings.sm} flex="1">
+                <Card paddingType="none">
+                    <Column
+                        gap={spacings.md}
+                        margin={{ vertical: spacings.xxs, horizontal: spacings.xxs }}
+                        alignItems="stretch"
+                    >
+                        <BluetoothScanHeader
+                            isScanning={false}
+                            onClose={onClose}
+                            numberOfDevices={devices.length}
+                        />
+                        <BluetoothDeniedForSuite />
+                    </Column>
+                </Card>
+            </Column>
+        );
+    }
+
     // Todo: incompatible version
-    const isVersionNotCompatible = false;
-    if (isVersionNotCompatible) {
+    if (bluetoothAdapterStatus === 'not-compatible') {
         return <BluetoothVersionNotCompatible onCancel={onClose} />;
     }
 

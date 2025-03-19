@@ -17,9 +17,9 @@ export const initBluetoothThunk = createThunk<void, void, void>(
             return;
         }
 
-        bluetoothIpc.on('adapter-event', isPowered => {
-            console.warn('adapter-event', isPowered);
-            dispatch(bluetoothActions.adapterEventAction({ isPowered }));
+        bluetoothIpc.on('adapter-event', status => {
+            console.warn('adapter-event', status);
+            dispatch(bluetoothActions.adapterEventAction({ status }));
         });
 
         bluetoothIpc.on('device-list-update', nearbyDevices => {

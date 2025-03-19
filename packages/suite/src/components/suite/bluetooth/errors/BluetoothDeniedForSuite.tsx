@@ -1,51 +1,38 @@
 import { useState } from 'react';
 
-import { Banner, Column, NewModal, Text } from '@trezor/components';
+import { Banner, Button, Card, Column, Icon, Row, Text } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 
-type BluetoothDeniedForSuiteProps = {
-    onCancel: () => void;
-};
-
-export const BluetoothDeniedForSuite = ({ onCancel }: BluetoothDeniedForSuiteProps) => {
+export const BluetoothDeniedForSuite = () => {
     const [hasDeeplinkFailed, setHasDeeplinkFailed] = useState(false);
 
     const openSettings = async () => {
-        const opened = await desktopApi.openSystemSettings('bluetooth');
-
-        console.log('opened', opened);
-
-        if (!opened.success || !opened.payload) {
+        // TODO: open Settings/Privacy and security/Bluetooth
+        const opened = await desktopApi.openSystemSettings('bluetooth-security');
+        if (!opened.success) {
             setHasDeeplinkFailed(true);
         }
     };
 
     return (
-        <NewModal
-            onCancel={onCancel}
-            variant="info"
-            iconName="bluetooth"
-            bottomContent={
-                <>
-                    <NewModal.Button onClick={openSettings}>Enable bluetooth</NewModal.Button>
-                    <NewModal.Button variant="tertiary" onClick={onCancel}>
-                        Cancel
-                    </NewModal.Button>
-                </>
-            }
-        >
+        <Card>
             <Column alignItems="start" gap={spacings.xs}>
-                <Text typographyStyle="titleSmall">Enable bluetooth on your computer</Text>
+                <Icon name="bluetooth" />
+                <Text typographyStyle="titleSmall">Allow bluetooth permissions</Text>
                 <Text typographyStyle="body" variant="tertiary">
                     Or connect your Trezor via cable.
                 </Text>
                 {hasDeeplinkFailed && (
                     <Banner variant="warning">
-                        Cannot open bluetooth settings. Please enable bluetooth manually.
+                        Cannot open permission settings. Go to Settings/Privacy and
+                        security/Bluetooth.
                     </Banner>
                 )}
+                <Row>
+                    <Button onClick={openSettings}>Open permissions settings</Button>
+                </Row>
             </Column>
-        </NewModal>
+        </Card>
     );
 };
