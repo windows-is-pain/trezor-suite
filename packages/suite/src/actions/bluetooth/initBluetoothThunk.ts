@@ -11,9 +11,6 @@ export const initBluetoothThunk = createThunk<void, void, void>(
         const { isBluetoothEnabled } = selectSuiteFlags(getState());
 
         if (!isBluetoothEnabled) {
-            bluetoothIpc.removeAllListeners();
-            await bluetoothIpc.dispose();
-
             return;
         }
 
