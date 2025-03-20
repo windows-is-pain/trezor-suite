@@ -45,6 +45,13 @@ const ConnectedComponent = () => (
     </Row>
 );
 
+const DisconnectedButWaitingComponent = () => (
+    <Row gap={spacings.xxs} alignItems="center">
+        <Spinner size={spacings.md} />
+        <Text variant="tertiary">Waiting</Text>
+    </Row>
+);
+
 export type OkComponentProps = {
     device: BluetoothDevice;
     onCancel: () => void;
@@ -58,7 +65,12 @@ const OkComponent = ({ device, onCancel }: OkComponentProps) => {
     );
 
     const map: Record<DeviceBluetoothConnectionStatusType, ReactNode> = {
-        disconnected: 'Disconnected', // Shall not be shown in the UI
+        disconnected: (
+            <>
+                <DisconnectedButWaitingComponent />
+                <CancelButton />
+            </>
+        ),
         pairing: (
             <>
                 <PairingComponent />
