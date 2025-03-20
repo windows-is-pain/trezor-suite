@@ -21,6 +21,10 @@ export const bluetoothEraseBondsThunk = createThunk<void, BluetoothEraseBondsThu
         // Todo: this shall happend AFTER the connect call but it is bugged so we do it optimistically
         dispatch(bluetoothActions.removeKnownDeviceAction({ id: bluetoothId }));
 
+        // TODO: missing button request in FW
+        console.log('___eraseBonds ...............');
+        const result = await TrezorConnect.eraseBonds({ device });
+
         const resultForget = await bluetoothIpc.forgetDevice(bluetoothId); // Todo: move this after connect call once fixed
         if (!resultForget.success) {
             dispatch(
@@ -30,10 +34,6 @@ export const bluetoothEraseBondsThunk = createThunk<void, BluetoothEraseBondsThu
                 }),
             );
         }
-
-        // TODO: missing button request in FW
-        console.log('___eraseBonds ...............');
-        const result = await TrezorConnect.eraseBonds({ device });
 
         console.log('___eraseBonds', result.success, result);
 
